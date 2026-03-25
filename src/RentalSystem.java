@@ -24,6 +24,7 @@ public class RentalSystem {
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        saveVehicle(vehicle);
     }
 
     public void addCustomer(Customer customer) {
@@ -142,6 +143,27 @@ public class RentalSystem {
     		writer.println(customer.getCustomerId() + "," +customer.getCustomerName());
     	} catch (IOException e) {
     		System.out.println("Error saving customer data: " + e.getMessage());
+    	}
+    }
+    private void saveVehicle(Vehicle vehicle) {
+    	try (PrintWriter writer = new PrintWriter(new FileWriter("vehicles.txt", true))) {
+    		String vehicleInfo = vehicle.getLicensePlate() + "," 
+    						+ vehicle.getMake() + ","
+    						+ vehicle.getModel() + ","
+    						+ vehicle.getYear() +","
+    						+ vehicle.getStatus();
+    		if (vehicle instanceof Car) {
+    			Car car = (Car) vehicle;
+    			writer.println("Car,"+ vehicleInfo + "," + car.getNumSeats());
+    		} else if (vehicle instanceof Minibus) {
+    			writer.println("Minibus,"+ vehicleInfo);
+    		} else if (vehicle instanceof PickupTruck) {
+    			PickupTruck truck = (PickupTruck) vehicle;
+    			writer.println("Pickup truck," + vehicleInfo + ","+ truck.getCargoSize()+ "," +truck.hasTrailer());
+    		}
+    							
+    	} catch (IOException e) {
+    		System.out.println("Error saving vehicle data:"+ e.getMessage());
     	}
     }
 }
