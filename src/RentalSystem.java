@@ -1,7 +1,9 @@
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
 public class RentalSystem {
 	private static RentalSystem instance;
     private List<Vehicle> vehicles;
@@ -26,6 +28,7 @@ public class RentalSystem {
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        saveCustomer(customer);
     }
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
@@ -133,5 +136,12 @@ public class RentalSystem {
             if (c.getCustomerId() == id)
                 return c;
         return null;
+    }
+    private void saveCustomer(Customer customer) {
+    	try (PrintWriter writer = new PrintWriter(new FileWriter("customers.txt",true))) {
+    		writer.println(customer.getCustomerId() + "," +customer.getCustomerName());
+    	} catch (IOException e) {
+    		System.out.println("Error saving customer data: " + e.getMessage());
+    	}
     }
 }
