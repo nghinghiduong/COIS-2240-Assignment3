@@ -14,6 +14,9 @@ public class RentalSystem {
     	vehicles = new ArrayList<>();
     	customers = new ArrayList<>();
     	rentalHistory = new RentalHistory();
+
+        //Load data 
+        loadData(); 
     }
     public static RentalSystem getInstance() {
     	if (instance == null){
@@ -183,7 +186,7 @@ public class RentalSystem {
     	}
     }
     private void saveRecord(RentalRecord record) {
-    	try (PrintWriter writer = new PrintWriter(new FileWriter("rental_records.txt, true"))){
+    	try (PrintWriter writer = new PrintWriter(new FileWriter("rental_records.txt", true))){
     		writer.println(record.getRecordType() + ","
     					+ record.getVehicle().getLicensePlate() + ","
     					+ record.getCustomer().getCustomerId() + ","
@@ -193,4 +196,99 @@ public class RentalSystem {
     		System.out.println("Error saving rental record: " + e.getMessage());
     	}
     }
+
+    private void loadData(){
+        loadCustomers() ;
+        loadVehicles() ;
+        loadRentalRecords() ; 
+    }
+
+    private void loadCustomers() {
+        try (java.util.Scanner scanner = new java.util.Scanner(new java.io.File("customers.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(",") ; 
+
+                int id = Integer.parseInt(parts[0]) ; 
+                String name = parts[1] ; 
+
+                customers.add(new Customer(id, name)) ; 
+            }
+
+        } catch (Exception e) {
+            System.out.println("No customer data found.") ;
+        }
+    }
+
+
+    private void loadVehicles() {
+        try (java.util.Scanner scanner = new java.util.Scanner(new java.io.File("vehicles.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(",") ; 
+
+                String type = parts[0] ; 
+                String plate = parts[1] ; 
+                String make = parts[2] ; 
+                String model = parts[3] ; 
+
+                int year = Integer.parseInt(parts[4]) ; 
+
+                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[5]) ; 
+
+                Vehicle vehicle = null ; 
+
+                if (type.equalsIgnoreCase("Car")) { 
+                    int seats = Integer.parseInt(parts[6]) ; 
+                    vehicle = new Car(make, model, year, seats) ; 
+                }
+                else if (type.equalsIgnoreCase("Minibus")) {
+                    boolean isAccessible = Boolean.parseBoolean(parts[6]); 
+                    vehicle = new Minibus(make, model, year, isAccessible) ; 
+                }
+                else if (type.equalsIgnoreCase("Pickup truck")) {
+                    double cargoSize = Double.parseDouble(parts[6]);
+                    boolean hasTrailer = Boolean.parseBoolean(parts[7]);
+                    vehicle = new PickupTruck(make, model, year, cargoSize, hasTrailer);
+                }
+                if (vehicle != null ) {
+                    vehicle.setLicensePlate(plate); 
+                    vehicle.setStatus(status);
+                    vehicles.add(vehicle);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("No vehicle data found.") ;
+        }
+    }
+
+    private void loadRentalRecords() {
+        try (java.util.Scanner scanner = new java.util.Scanner(new java.io.File("rental_records.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(",") ; 
+
+                String type = parts[0] ; 
+                String plate = parts[1] ; 
+                int customerId = Integer.parseInt(parts[2]);
+                LocalDate date = LocalDate.parse(parts[3]); 
+                double amount = Double.parseDouble(parts[4]) ; 
+                
+                Vehicle vehicle = findVehicleByPlate(plate) ; 
+                Customer customer = findCustomerById(customerId);
+                
+                if (vehicle != null && customer != null) {
+                    rentalHistory.addRecord(
+                        new RentalRecord(vehicle, customer, date, amount, type) 
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("No rental record data found.") ;
+        }
+    }
+
+    
+
+
+
 }
