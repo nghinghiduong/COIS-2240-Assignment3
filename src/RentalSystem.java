@@ -14,6 +14,9 @@ public class RentalSystem {
     	vehicles = new ArrayList<>();
     	customers = new ArrayList<>();
     	rentalHistory = new RentalHistory();
+
+        //Load data 
+        loadData(); 
     }
     public static RentalSystem getInstance() {
     	if (instance == null){
@@ -179,4 +182,26 @@ public class RentalSystem {
     		System.out.println("Error saving rental record: " + e.getMessage());
     	}
     }
+
+    private void loadData(){
+        loadCustomers();
+    }
+
+    private void loadCustomers() {
+        try (java.util.Scanner scanner = new java.util.Scanner(new java.io.File("customers.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(",") ; 
+
+                int id = Integer.parseInt(parts[0]) ; 
+                String name = parts[1] ; 
+
+                customers.add(new Customer(id, name)) ; 
+            }
+
+        } catch (Exception e) {
+            System.out.println("No customer data found.") ;
+        }
+    }
+
+
 }
