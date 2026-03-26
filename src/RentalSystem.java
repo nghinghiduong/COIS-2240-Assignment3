@@ -41,6 +41,7 @@ public class RentalSystem {
         else {
             System.out.println("Vehicle is not available for renting.");
         }
+        saveRecord(new RentalRecord(vehicle, customer, date, amount, "RENT"));
     }
 
     public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) {
@@ -52,6 +53,7 @@ public class RentalSystem {
         else {
             System.out.println("Vehicle is not rented.");
         }
+        saveRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
     }    
 
     public void displayVehicles(Vehicle.VehicleStatus status) {
@@ -164,6 +166,17 @@ public class RentalSystem {
     							
     	} catch (IOException e) {
     		System.out.println("Error saving vehicle data:"+ e.getMessage());
+    	}
+    }
+    private void saveRecord(RentalRecord record) {
+    	try (PrintWriter writer = new PrintWriter(new FileWriter("rental_records.txt, true"))){
+    		writer.println(record.getRecordType() + ","
+    					+ record.getVehicle().getLicensePlate() + ","
+    					+ record.getCustomer().getCustomerId() + ","
+    					+ record.getRecordDate() + ","
+    					+ record.getTotalAmount());
+    	} catch (IOException e) {
+    		System.out.println("Error saving rental record: " + e.getMessage());
     	}
     }
 }
