@@ -1,1 +1,3 @@
 Car,HH5556,Kjhg,Bv,987,Available,3
+Car,2345ESD,Wsedf,Qwe,2341,Available,2
+Minibus,WER3ED,Dsf,Twdesa,1111,Available

@@ -185,6 +185,7 @@ public class RentalSystem {
 
     private void loadData(){
         loadCustomers();
+        loadVehicles();
     }
 
     private void loadCustomers() {
@@ -202,6 +203,49 @@ public class RentalSystem {
             System.out.println("No customer data found.") ;
         }
     }
+
+
+    private void loadVehicles() {
+        try (java.util.Scanner scanner = new java.util.Scanner(new java.io.File("vehicles.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(",") ; 
+
+                String type = parts[0] ; 
+                String plate = parts[1] ; 
+                String make = parts[2] ; 
+                String model = parts[3] ; 
+
+                int year = Integer.parseInt(parts[4]) ; 
+
+                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[5]) ; 
+
+                Vehicle vehicle = null ; 
+
+                if (type.equalsIgnoreCase("Car")) { 
+                    int seats = Integer.parseInt(parts[6]) ; 
+                    vehicle = new Car(make, model, year, seats) ; 
+                }
+                else if (type.equalsIgnoreCase("Minibus")) {
+                    boolean isAccessible = Boolean.parseBoolean(parts[6]); 
+                    vehicle = new Minibus(make, model, year, isAccessible) ; 
+                }
+                else if (type.equalsIgnoreCase("Pickup truck")) {
+                    double cargoSize = Double.parseDouble(parts[6]);
+                    boolean hasTrailer = Boolean.parseBoolean(parts[7]);
+                    vehicle = new PickupTruck(make, model, year, cargoSize, hasTrailer);
+                }
+                if (vehicle != null ) {
+                    vehicle.setLicensePlate(plate); 
+                    vehicle.setStatus(status);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("No vehicle data found.") ;
+        }
+    }
+
+
 
 
 }
