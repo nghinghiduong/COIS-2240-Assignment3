@@ -20,7 +20,7 @@ public abstract class Vehicle {
         if (input == null || input.isEmpty()) { 
     		return null;
         }
-        return input.substring(0, 1).toUpperCase() + make.substring(1).toLowerCase();
+        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
     }
 
     public Vehicle() {
@@ -28,7 +28,13 @@ public abstract class Vehicle {
     }
 
     public void setLicensePlate(String plate) {
-        this.licensePlate = plate == null ? null : plate.toUpperCase();
+
+        // method to call is ValidPlate()
+        if (plate == null || !isValidPlate(plate)) {
+            throw new IllegalArgumentException("Invalid license plate format. Must be 3 letters followed by 3 digits.");
+        }
+        this.licensePlate = plate.toUpperCase();
+
     }
 
     public void setStatus(VehicleStatus status) {
@@ -47,6 +53,13 @@ public abstract class Vehicle {
 
     public String getInfo() {
         return "| " + licensePlate + " | " + make + " | " + model + " | " + year + " | " + status + " |";
+    }
+
+    private boolean isValidPlate(String plate) {
+        if (plate == null || plate.isEmpty()) {
+            return false ;
+        }
+        return plate.matches("[A-Z]{3}[0-9]{3}") ; 
     }
 
 }
