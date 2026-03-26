@@ -172,7 +172,7 @@ public class RentalSystem {
     	}
     }
     private void saveRecord(RentalRecord record) {
-    	try (PrintWriter writer = new PrintWriter(new FileWriter("rental_records.txt, true"))){
+    	try (PrintWriter writer = new PrintWriter(new FileWriter("rental_records.txt", true))){
     		writer.println(record.getRecordType() + ","
     					+ record.getVehicle().getLicensePlate() + ","
     					+ record.getCustomer().getCustomerId() + ","
@@ -184,8 +184,9 @@ public class RentalSystem {
     }
 
     private void loadData(){
-        loadCustomers();
-        loadVehicles();
+        loadCustomers() ;
+        loadVehicles() ;
+        loadRentalRecords() ; 
     }
 
     private void loadCustomers() {
@@ -237,6 +238,7 @@ public class RentalSystem {
                 if (vehicle != null ) {
                     vehicle.setLicensePlate(plate); 
                     vehicle.setStatus(status);
+                    vehicles.add(vehicle);
                 }
             }
 
@@ -245,6 +247,33 @@ public class RentalSystem {
         }
     }
 
+    private void loadRentalRecords() {
+        try (java.util.Scanner scanner = new java.util.Scanner(new java.io.File("rental_records.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(",") ; 
+
+                String type = parts[0] ; 
+                String plate = parts[1] ; 
+                int customerId = Integer.parseInt(parts[2]);
+                LocalDate date = LocalDate.parse(parts[3]); 
+                double amount = Double.parseDouble(parts[4]) ; 
+                
+                Vehicle vehicle = findVehicleByPlate(plate) ; 
+                Customer customer = findCustomerById(customerId);
+                
+                if (vehicle != null && customer != null) {
+                    rentalHistory.addRecord(
+                        new RentalRecord(vehicle, customer, date, amount, type) 
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("No rental record data found.") ;
+        }
+    }
+
+    
 
 
 
