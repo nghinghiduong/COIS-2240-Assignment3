@@ -22,14 +22,28 @@ public class RentalSystem {
     	return instance;
     }
 
-    public void addVehicle(Vehicle vehicle) {
-        vehicles.add(vehicle);
-        saveVehicle(vehicle);
+    public boolean addVehicle(Vehicle vehicle) {
+    	Vehicle existingVehicle = findVehicleByPlate(vehicle.getLicensePlate());
+    	if (existingVehicle == null) {
+	    	vehicles.add(vehicle);
+	    	saveVehicle(vehicle);
+	    	return true;
+    	} else {
+    		System.out.println("The vehicle is already exist in the system");
+    		return false;
+    	}
     }
 
-    public void addCustomer(Customer customer) {
-        customers.add(customer);
-        saveCustomer(customer);
+    public boolean addCustomer(Customer customer) {
+    	Customer existingCustomer = findCustomerById(customer.getCustomerId());
+    	if(existingCustomer == null) {
+	        customers.add(customer);
+	        saveCustomer(customer);
+	        return true;
+    	} else {
+    		System.out.println("The customer is already exist in the system");
+    		return false;
+    	}
     }
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
