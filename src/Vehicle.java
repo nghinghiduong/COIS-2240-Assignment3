@@ -33,7 +33,11 @@ public abstract class Vehicle {
         if (plate == null || !isValidPlate(plate)) {
             throw new IllegalArgumentException("Invalid license plate format. Must be 3 letters followed by 3 digits.");
         }
-        this.licensePlate = plate.toUpperCase();
+        plate = plate.toUpperCase();
+        if(!isValidPlate(plate)) {
+        	throw new IllegalArgumentException("Invalid license plate format. Must be 3 letters followed by 3 digits.");
+        }
+        this.licensePlate = plate;
 
     }
 
