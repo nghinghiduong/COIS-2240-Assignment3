@@ -65,5 +65,8 @@ public abstract class Vehicle {
         }
         return plate.matches("[A-Z]{3}[0-9]{3}") ; 
     }
+    public String toString() {
+    	return getInfo();
+    }
 
 }
