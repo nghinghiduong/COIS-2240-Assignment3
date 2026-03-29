@@ -3,6 +3,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
+import  java.lang.reflect.Constructor; 
+import  java.lang.reflect.Modifier ; 
+
+
 public class VehicleRentalTest {
 	private RentalSystem rentalSystem;
 	
@@ -68,6 +72,28 @@ public class VehicleRentalTest {
     	assertTrue(result);
     	assertEquals(Vehicle.VehicleStatus.Available, v.getStatus());
     }
+
+
+    @Test
+    public void testSingletonRentalSystem() { 
+        try { 
+            // constructor of RentalSystem 
+            Constructor<RentalSystem> constructor = RentalSystem.class.getDeclaredConstructor(); 
+
+            // modifiers of theconstructor 
+            int modifiers = constructor.getModifiers() ; 
+            assertEquals(Modifier.PRIVATE, modifiers) ;
+
+            // get instance and assert if its not null 
+            RentalSystem instance = RentalSystem.getInstance() ; 
+            assertNotNull(instance); 
+
+        } catch (Exception e) { 
+            fail("Exception: " + e.getMessage()) ; 
+        }
+
+    }
+
 }
 
 
