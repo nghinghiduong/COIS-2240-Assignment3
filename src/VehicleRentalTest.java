@@ -63,7 +63,7 @@ public class VehicleRentalTest {
     	assertTrue(result);
     	assertEquals(Vehicle.VehicleStatus.Rented, v.getStatus());
     	
-    	//fail
+    	//fail rent
     	result = rentalSystem.rentVehicle(v,c, LocalDate.now(), 50.0);
     	assertFalse(result);
     	
@@ -71,6 +71,10 @@ public class VehicleRentalTest {
     	result = rentalSystem.returnVehicle(v, c, LocalDate.now(), 10.0);
     	assertTrue(result);
     	assertEquals(Vehicle.VehicleStatus.Available, v.getStatus());
+    	
+    	//fail return same vehicle
+    	result = rentalSystem.returnVehicle(v, c, LocalDate.now(), 10.0);
+    	assertFalse(result);
     }
 
 
@@ -80,7 +84,7 @@ public class VehicleRentalTest {
             // constructor of RentalSystem 
             Constructor<RentalSystem> constructor = RentalSystem.class.getDeclaredConstructor(); 
 
-            // modifiers of theconstructor 
+            // modifiers of the constructor 
             int modifiers = constructor.getModifiers() ; 
             assertEquals(Modifier.PRIVATE, modifiers) ;
 
